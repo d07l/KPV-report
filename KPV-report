@@ -2,7 +2,7 @@
 // @name         KPV-report
 // @namespace    http://tampermonkey.net/
 // @author       Цари / Ритуал [1241910]
-// @version      2.7
+// @version      2.8
 // @description  Автоматическое заполнение отчётов
 // @match        https://*.catwar.su/blog*
 // @match        https://*.catwar.net/blog*
@@ -125,6 +125,7 @@ const rewards = [
     { type: "medal", id: "280", name: "Умелый воспитатель", img: "https://catwar.net/medal/280.png" },
     { type: "medal", id: "178", name: "Усердный тренер", img: "https://catwar.net/medal/178.png" },
     { type: "medal", id: "1097", name: "Хранитель клана", img: "https://catwar.net/medal/1097.png" },
+    { type: "medal", id: "5322", name: "Старательный помощник", img: "https://catwar.net/medal/5322.png" },
 
     // =======================
     // Предметы
@@ -901,19 +902,20 @@ let endDate = toDate(endDateStr, endTime);
 
 let diffHours = (endDate - startDate) / 3600000;
 diffHours = Math.round(diffHours * 2) / 2;
+const diffHoursText = diffHours.toString().replace('.', ',');
 
 if (isNaN(diffHours)) diffHours = 0;
               const my_id = parseInt($('#kpo_blog_myid').val());
               rememberMyID(my_id);
               let date = splitDateStr($("#kpv_doz1_date").val());
               let date2 = splitDateStr($("#kpv_doz2_date_end").val());
-              let text = `[b]Дата и время:[/b] ${date2.day}.${date2.month}.${date2.year}, ` + $("#kpv_doz2_time").val() + `-` + $("#kpv_doz2_time_end").val() +`.`
-              text += `\n[b]Количество проведённых в дежурстве часов:[/b] ${diffHours}.`;
-              text += `\n[b]Дежурил:[/b] ${masking(my_id, '[[cat%ID%]|%ID%]')}.`;
-              text += `\n[b]Локация/маршрут:[/b] ` + $("#kpv_doz2_place").val() + `.`;
+              let text = `[b]Дата и время:[/b] ${date2.day}.${date2.month}.${date2.year}, ` + $("#kpv_doz2_time").val() + `-` + $("#kpv_doz2_time_end").val()
+              text += `\n[b]Количество проведённых в дежурстве часов:[/b] ${diffHoursText}`;
+              text += `\n[b]Дежурил:[/b] ${masking(my_id, '[[cat%ID%]|%ID%]')}`;
+              text += `\n[b]Локация/маршрут:[/b] ` + $("#kpv_doz2_place").val();
               const narText = $('#kpo_patr_members').val().trim();
 
-text += `\n[b]Пойманные нарушители:[/b] ${narText ? narText : 'отсутствуют'}.`;
+text += `\n[b]Пойманные нарушители:[/b] ${narText ? narText : 'отсутствуют'}`;
               let val = $('#comment').val();
               if (val) {
                   val += "\n\n";
