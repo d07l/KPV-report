@@ -708,8 +708,8 @@ ${my_id_div}
   <div id="kpv_doz_block" class="kpo_tabs_content" style="display:none;"">
     <p class="view-title">Начало слежки</p>
     <table>
-        <tr><td>Дата начала:</td><td><input type="date" class="kpo-input" id="kpv_slez_date" required value="${date_str}"></td></tr>
-        <tr><td>Время начала:</td><td><input type="time" class="kpo-input" id="kpv_slez_time" required value="${doz_time}" step="60"></td><td></td></tr>
+        <tr><td>Дата начала:</td><td><input type="date" class="kpo-input" id="kpv_slez1_date" required value="${date_str}"></td></tr>
+        <tr><td>Время начала:</td><td><input type="time" class="kpo-input" id="kpv_slez1_time" required value="${doz_time}" step="60"></td><td></td></tr>
     </table>
     <div></div>
     <button class="inp-button" id="kpv_slez1">Заполнить отчет</button>
@@ -718,6 +718,8 @@ ${my_id_div}
   <div id="kpv_doz_block" class="kpo_tabs_content" style="display:none;">
     <p class="view-title">Конец слежки</p>
     <table>
+        <tr><td>Дата начала:</td><td><input type="date" class="kpo-input" id="kpv_slez2_date" required value="${date_str}"></td></tr>
+        <tr><td>Время начала:</td><td><input type="time" class="kpo-input" id="kpv_slez2_time" required value="${doz_time}" step="60"></td><td></td></tr>
         <tr><td>Дата окончания:</td><td><input type="date" class="kpo-input" id="kpv_slez_date_stop" required value="${date_str}"></td></tr>
         <tr><td>Время окончания:</td><td><input type="time" class="kpo-input" id="kpv_slez_time_stop" required value="${doz_time}" step="60"></td><td></td></tr>
     </table>
@@ -925,11 +927,26 @@ $(document).on('click', '.kpo_tabs_caption li', function () {
           const savedDateSlez = localStorage.getItem('kpv_slez_date');
 
           if (savedTimeSlez) {
-              $('#kpv_slez_time').val(savedTimeSlez);
+              $('#kpv_slez1_time, #kpv_slez2_time').val(savedTimeSlez);
           }
           if (savedDateSlez) {
-              $('#kpv_slez_date').val(savedDateSlez);
+              $('#kpv_slez1_date,  #kpv_slez2_date').val(savedDateSlez);
           }
+
+          $('#kpv_slez1_time, #kpv_slez2_time').on('change', function (e) {
+              const val = $(this).val();
+              const n = $(this).attr('id').indexOf('slez1') !== -1 ? 2 : 1;
+              $(`#kpv_slez${n}_time`).val(val);
+              localStorage.setItem('kpv_slez_time', val);
+          });
+
+          $('#kpv_slez1_date,  #kpv_slez2_date').on('change', function (e) {
+              const val = $(this).val();
+              const n = $(this).attr('id').indexOf('slez1') !== -1 ? 2 : 1;
+              $(`#kpv_slez${n}_date`).val(val);
+              localStorage.setItem('kpv_slez_date', val);
+          });
+
 
 
             /*НАЧАЛО ДЕЖУРСТВА*/
@@ -1075,8 +1092,8 @@ $('#comment')[0].scrollIntoView({
             /*НАЧАЛО СЛЕЖКИ*/
 
           $('#kpv_slez1').on('click', function (e) {
-              let startDateStr = $("#kpv_slez_date").val();
-              let startTime = $("#kpv_slez_time").val();
+              let startDateStr = $("#kpv_slez1_date").val();
+              let startTime = $("#kpv_slez1_time").val();
 
               function toDate(str, time) {
                   let [y, m, d] = str.split('-').map(Number);
@@ -1085,10 +1102,10 @@ $('#comment')[0].scrollIntoView({
               }
 
               let startDate = toDate(startDateStr, startTime);
-              let date = splitDateStr($("#kpv_slez_date").val());
+              let date = splitDateStr($("#kpv_slez1_date").val());
 
               let text = `[b]Слежка ${date.day}.${date.month}.${date.year}[/b]
-Начал/а следить в ${$("#kpv_slez_time").val()}`
+Начал/а следить в ${$("#kpv_slez1_time").val()}`
 
 
               let val = $('#comment').val();
@@ -1102,8 +1119,8 @@ $('#comment')[0].scrollIntoView({
                   block: 'center'
               });
 
-              localStorage.setItem('kpv_slez_date', $('#kpv_slez_date').val());
-              localStorage.setItem('kpv_slez_time', $('#kpv_slez_time').val());
+              localStorage.setItem('kpv_slez_date', $('#kpv_slez1_date').val());
+              localStorage.setItem('kpv_slez_time', $('#kpv_slez1_time').val());
 
             });
 
@@ -1153,8 +1170,8 @@ $('#comment')[0].scrollIntoView({
                   String(now.getMonth() + 1).padStart(2, '0') + '-' +
                   String(now.getDate()).padStart(2, '0');
 
-              $('#kpv_slez_time').val(currentTime);
-              $('#kpv_slez_date').val(currentDate);
+              $('#kpv_slez1_time, #kpv_slez2_time').val(currentTime);
+              $('#kpv_slez1_date, #kpv_slez2_date').val(currentDate);
             });
 
 
@@ -2660,7 +2677,6 @@ $('#comment')[0].scrollIntoView({
     <table>
         <br>
         <tr><td>Количество взятых костоправов:</td><td><input type="number" style="width:60px" class="kpo-input" id="bones_number" value="0" min="0"></td></tr>
-        <tr><td>На сколько часов взяты:</td><td><input type="number" style="width:60px" class="kpo-input" id="bones_hours" value="0" min="0"></td></tr>
         <tr><td>Количество здоровья:</td><td><input type="number" style="width:60px" class="kpo-input" id="bones_hp" value="0" min="0"></td></tr>
     </table>
     <div></div>
@@ -2825,22 +2841,17 @@ $('#comment')[0].scrollIntoView({
             /*ПЕРЕЛОМЫ*/
             $('#heal_1').on('click', function (e) {
 
-                //добавить иф если ниче не вписали
+                let text = "";
 
+                const bonesNumber = $('#bones_number').val();
 
-                let text = `[b]Количество взятых костоправов:[/b] ${$("#bones_number").val()}`;
-
-                if ($('#bones_hours').val() != 0 && $('#bones_hp').val() != 0) {
-
-                    if ($('#bones_number').val() == 1){
-                        text += `\nВзят на [b]${$("#bones_hours").val()}[/b] часов при [b]${$("#bones_hp").val()}%[/b] здоровья`;
-                    }
-                    else {
-                        text += `\nВзяты на [b]${$("#bones_hours").val()}[/b] часов при [b]${$("#bones_hp").val()}%[/b] здоровья`;
-                    }
-
+                if (bonesNumber == 1) {
+                    text += `Взято: [b]${bonesNumber}[/b] костоправ при [b]${$("#bones_hp").val()}%[/b] здоровья`;
+                } else if ([2, 3, 4].includes(Number(bonesNumber))) {
+                    text += `Взято: [b]${bonesNumber}[/b] костоправа при [b]${$("#bones_hp").val()}%[/b] здоровья`;
+                } else {
+                    text += `Взято: [b]${bonesNumber}[/b] костоправов при [b]${$("#bones_hp").val()}%[/b] здоровья`;
                 }
-
 
                 let val = $('#comment').val();
                 if (val) {
@@ -2857,7 +2868,7 @@ $('#comment')[0].scrollIntoView({
             $('#heal_2').on('click', function (e) {
 
                 let text = `[b]Количество и процент взятых трав:[/b] ${$("#poison_number").val()}
-[b]Количество здоровья:[/b] ${$("#poison_hp").val()}
+[b]Количество здоровья:[/b] ${$("#poison_hp").val()}%
 [b]Причина появления:[/b] ${$("#poison_reason").val()}`;
 
                 const poisonScreen = $('#poison_screen').val().trim();
@@ -2886,7 +2897,7 @@ $('#comment')[0].scrollIntoView({
                 let text = `Хочу излечиться от [b]${selectedValues}[/b]`;
 
                 if (selectedValues != 'блох') {
-                    text += `\n[b]Количество здоровья:[/b] ${$("#heal_hp").val()}
+                    text += `\n[b]Количество здоровья:[/b] ${$("#heal_hp").val()}%
 [b]Причина появления:[/b] ${$("#heal_reason").val()}`;
 
                     const poisonScreen = $('#heal_screen').val().trim();
