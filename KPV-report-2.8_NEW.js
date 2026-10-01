@@ -1089,6 +1089,7 @@ $('#comment')[0].scrollIntoView({
             // $("#comment").scrollintoview();
           });
 
+
             /*НАЧАЛО СЛЕЖКИ*/
 
           $('#kpv_slez1').on('click', function (e) {
@@ -1129,21 +1130,23 @@ $('#comment')[0].scrollIntoView({
 
           $('#kpv_slez2').on('click', function (e) {
 
-              const startDateStr = localStorage.getItem('kpv_slez_date');
-              const startTimeStr = localStorage.getItem('kpv_slez_time');
+              let startDateStr = $("#kpv_slez2_date").val();
+              let endDateStr = $("#kpv_slez_date_stop").val();
 
-              const startDate = toDate(startDateStr, startTimeStr);
-              const endDate = toDate($('#kpv_slez_date_stop').val(), $('#kpv_slez_time_stop').val());
-
-              let diffHours = Math.round(((endDate - startDate) / 3600000) * 2) / 2;
-              if (isNaN(diffHours)) diffHours = 0;
-
+              let startTime = $("#kpv_slez1_time").val();
+              let endTime = $("#kpv_slez_time_stop").val();
 
               function toDate(str, time) {
                   let [y, m, d] = str.split('-').map(Number);
                   let [h, min] = time.split(':').map(Number);
                   return new Date(y, m - 1, d, h, min);
               }
+
+              let startDate = toDate(startDateStr, startTime);
+              let endDate = toDate(endDateStr, endTime);
+
+              let diffHours = Math.round(((endDate - startDate) / 3600000) * 2) / 2;
+              if (isNaN(diffHours)) diffHours = 0;
 
               let text = `[b]Слежка[/b] (${diffHours})
 Закончил/а следить в ${$("#kpv_slez_time_stop").val()}`
